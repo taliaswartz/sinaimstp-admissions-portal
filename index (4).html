@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MSTP Admissions Committee Portal — 2026–27</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body, #root { height: 100%; width: 100%; }
+    body { font-family: 'Inter', sans-serif; background: #F5F7FA; color: #1E293B; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.12); border-radius: 4px; }
+    .fi { animation: fi 0.3s ease forwards; }
+    @keyframes fi { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .rb { transition: all 0.15s; cursor: pointer; border: none; background: none; text-align: left; width: 100%; }
+    .rb:hover .ri { background: rgba(255,255,255,0.04) !important; }
+    .tb { transition: all 0.15s; cursor: pointer; border: none; background: none; }
+    .lb { transition: opacity 0.15s; cursor: pointer; border: none; }
+    .lb:hover { opacity: 0.8; }
+    .ck { transition: all 0.15s; cursor: pointer; border: none; }
+    .ck:hover { transform: scale(1.08); }
+  </style>
+</head>
+<body style="overflow:hidden;">
+
+  <style id="login-style">
+    #login-screen {
+      position: fixed; inset: 0; z-index: 9999;
+      background: #F5F7FA;
+      display: flex; align-items: center; justify-content: center;
+    }
+    #login-screen.hidden { display: none; }
+    #login-card {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 16px;
+      box-shadow: 0 8px 40px rgba(27,45,91,0.12);
+      width: 100%; max-width: 420px;
+      overflow: hidden;
+    }
+    #login-top {
+      background: #1B2D5B;
+      padding: 28px 36px 24px;
+      position: relative;
+    }
+    #login-top::after {
+      content: ''; position: absolute;
+      bottom: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, #0075C2, #00AFAA, #C5007C);
+    }
+    #login-logo {
+      width: 155px; height: auto;
+      filter: brightness(0) invert(1); opacity: 0.88;
+      display: block; margin-bottom: 14px;
+    }
+    #login-top-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 13px; font-weight: 700;
+      color: rgba(255,255,255,0.85); letter-spacing: -0.01em;
+    }
+    #login-top-sub {
+      font-size: 10.5px; color: rgba(255,255,255,0.35);
+      margin-top: 3px;
+    }
+    #login-body { padding: 32px 36px 34px; }
+    #login-headline {
+      font-family: 'Syne', sans-serif;
+      font-size: 22px; font-weight: 700;
+      color: #0F172A; letter-spacing: -0.03em; margin-bottom: 5px;
+    }
+    #login-desc {
+      font-size: 13px; color: #94A3B8;
+      margin-bottom: 26px; line-height: 1.6;
+    }
+    #login-label {
+      display: block; font-size: 10.5px; font-weight: 600;
+      color: #64748B; letter-spacing: 0.07em;
+      text-transform: uppercase; margin-bottom: 7px;
+    }
+    #login-input {
+      width: 100%; padding: 11px 14px;
+      border-radius: 8px; border: 1.5px solid #E2E8F0;
+      background: #F8FAFC; color: #0F172A; font-size: 14px;
+      font-family: 'Inter', sans-serif; outline: none;
+      margin-bottom: 12px; box-sizing: border-box;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    #login-input:focus {
+      border-color: #00AFAA; background: #FFFFFF;
+      box-shadow: 0 0 0 3px rgba(0,175,170,0.1);
+    }
+    #login-input::placeholder { color: #CBD5E1; }
+    #login-btn {
+      width: 100%; padding: 12px; border-radius: 8px; border: none;
+      background: #1B2D5B; color: #FFFFFF;
+      font-size: 13.5px; font-weight: 600;
+      font-family: 'Inter', sans-serif; cursor: pointer;
+      letter-spacing: 0.01em;
+      transition: background 0.15s, transform 0.1s;
+    }
+    #login-btn:hover { background: #0075C2; transform: translateY(-1px); }
+    #login-btn:active { transform: translateY(0); }
+    #login-error { font-size: 12px; color: #EF4444; margin-top: 10px; min-height: 16px; }
+    #login-footer { font-size: 11px; color: #CBD5E1; margin-top: 20px; line-height: 1.6; text-align: center; }
+    #login-footer a { color: #00AFAA; text-decoration: none; }
+  </style>
+
+  <!-- Login screen -->
+  <div id="login-screen">
+    <div id="login-card">
+      <div id="login-top">
+        <div style="display:flex;align-items:stretch;gap:12px;margin-bottom:18px;">
+          <div style="width:4px;border-radius:2px;background:linear-gradient(180deg,#0075C2,#00AFAA);flex-shrink:0;"></div>
+          <div>
+            <div style="font-family:'Syne',Georgia,serif;font-size:13px;font-weight:700;color:#FFFFFF;letter-spacing:0.02em;line-height:1.35;">ICAHN SCHOOL OF MEDICINE<br/>AT MOUNT SINAI</div>
+            <div style="font-family:'Inter',Arial,sans-serif;font-size:10px;color:rgba(255,255,255,0.4);margin-top:4px;letter-spacing:0.05em;text-transform:uppercase;">MD-PhD Program</div>
+          </div>
+        </div>
+        <div id="login-top-title">MD-PhD Program &middot; Admissions Portal</div>
+        <div id="login-top-sub">2026&ndash;27 admissions cycle &middot; Committee access only</div>
+      </div>
+      <div id="login-body">
+        <div id="login-headline">Welcome</div>
+        <div id="login-desc">Enter your committee password to access your role guide, training resources, and season calendar.</div>
+        <label id="login-label" for="login-input">Password</label>
+        <input id="login-input" type="password" placeholder="Enter password" autocomplete="current-password" />
+        <button id="login-btn">Enter portal</button>
+        <div id="login-error"></div>
+        <div id="login-footer">Need access? Contact <a href="mailto:matthew.hersey@mssm.edu">Matthew Hersey</a> or <a href="mailto:bianca.taylor-starobin@mssm.edu">Bianca Taylor</a>.</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const HASH = "9cda27e20bee5d92cf072b9ad76bd534d6819f8d6226add6f32a67973a744e69";
+
+    async function sha256(str) {
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("");
+    }
+
+    function unlock() {
+      const s = document.getElementById("login-screen");
+      if (s) s.classList.add("hidden");
+    }
+
+    async function tryLogin() {
+      const input = document.getElementById("login-input");
+      const err   = document.getElementById("login-error");
+      if (!input) return;
+      const hashed = await sha256(input.value);
+      if (hashed === HASH) {
+        sessionStorage.setItem("mstp_auth", HASH);
+        unlock();
+      } else {
+        if (err) err.textContent = "Incorrect password. Please try again.";
+        input.value = ""; input.focus();
+        setTimeout(() => { if (err) err.textContent = ""; }, 3000);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      const btn   = document.getElementById("login-btn");
+      const input = document.getElementById("login-input");
+      if (btn)   btn.addEventListener("click", tryLogin);
+      if (input) input.addEventListener("keydown", e => { if (e.key === "Enter") tryLogin(); });
+      if (sessionStorage.getItem("mstp_auth") === HASH) unlock();
+    });
+  </script>
+
+
+  <div id="root"></div>
+  <script type="text/babel" data-presets="react">
+    const { useState, useEffect } = React;
+
+    const ROLES = [
+      { id:"screener",               label:"Screener",                  group:"Screeners"         },
+      { id:"student_interviewer",    label:"Student Interviewer",       group:"Interviewers"      },
+      { id:"research_interviewer",   label:"Research Interviewer",      group:"Interviewers"      },
+      { id:"faculty_interviewer",    label:"Faculty AdCom Interviewer", group:"Interviewers"      },
+      { id:"student_adcom",          label:"Student AdCom Member",      group:"Committee Members" },
+      { id:"resident_fellow_adcom",  label:"Resident / Fellow AdCom",   group:"Committee Members" },
+      { id:"staff_adcom",            label:"Staff AdCom Member",        group:"Committee Members" },
+      { id:"faculty_adcom",          label:"Faculty AdCom Member",      group:"Committee Members" },
+      { id:"recruitment_chair",      label:"Recruitment Chair",         group:"Recruitment"       },
+      { id:"recruitment_participant",label:"Recruitment Participant",   group:"Recruitment"       },
+    ];
+
+    const GC = {
+      "Screeners":         { accent:"#00AFAA", dim:"rgba(0,175,170,0.12)",  border:"rgba(0,175,170,0.3)"  },
+      "Interviewers":      { accent:"#0075C2", dim:"rgba(0,117,194,0.12)",  border:"rgba(0,117,194,0.3)"  },
+      "Committee Members": { accent:"#00AFAA", dim:"rgba(0,175,170,0.12)",  border:"rgba(0,175,170,0.3)"  },
+      "Recruitment":       { accent:"#C5007C", dim:"rgba(197,0,124,0.12)",  border:"rgba(197,0,124,0.3)"  },
+    };
+
+    const CONTENT = {
+      screener: {
+        desc:"Your role is to conduct comprehensive application reviews and provide detailed narrative evaluations that support interviewers and committee members throughout the season.",
+        badges:[{l:"Screens applications",c:"#00AFAA"},{l:"Feeds forward to interviewers",c:"#00AFAA"}],
+        onboarding:[
+          {label:"Complete admissions training", note:"Required before any participation"},
+          {label:"Sign Code of Conduct / COI attestation", link:"https://docs.google.com/forms/d/e/1FAIpQLSdcpLaB6UlMFER5a2W3Klg2bBhGvaWaTmzP3OlASqQKTA0pWg/viewform"},
+          {label:"Submit training feedback", link:"https://docs.google.com/forms/d/e/1FAIpQLSf_sFttclJ0htN8HBgQTVBYPWj2gMAVNNDgJ4H_59ugso-clg/viewform"},
+        ],
+        type:"screener",
+      },
+      student_interviewer: {
+        desc:"You bring the peer lens. Through thoughtful conversation, explore who each applicant is beyond the written application — assessing the team-player standardized question and six core domains.",
+        badges:[{l:"Scored interviews",c:"#0075C2"},{l:"Team-player question",c:"#0075C2"}],
+        onboarding:[
+          {label:"Complete admissions training", note:"Required before any participation"},
+          {label:"Sign Code of Conduct / COI attestation", link:"https://docs.google.com/forms/d/e/1FAIpQLSdcpLaB6UlMFER5a2W3Klg2bBhGvaWaTmzP3OlASqQKTA0pWg/viewform"},
+          {label:"Submit training feedback", link:"https://docs.google.com/forms/d/e/1FAIpQLSf_sFttclJ0htN8HBgQTVBYPWj2gMAVNNDgJ4H_59ugso-clg/viewform"},
+        ],
+        forms:[], platform:true, type:"student_int",
+      },
+      research_interviewer: {
+        desc:"Your interview is unscored and focused exclusively on research. No admissions training, COI attestation, or feedback form is required. Review the applicant's application and follow the guide below.",
+        badges:[{l:"Unscored interview",c:"#0075C2"},{l:"Research focus only",c:"#0075C2"},{l:"No training required",c:"#4BA8D9"}],
+        onboarding:[
+          {label:"Review the applicant's full application before the interview", note:"Pay attention to research experiences, stated interests, and identified faculty"},
+        ],
+        platform:true, type:"research_int",
+      },
+      faculty_interviewer: {
+        desc:"You conduct scored interviews across six core domains, assessing the self-improving standardized question and synthesizing findings from the full application. You also screen approximately 20 applications per season.",
+        badges:[{l:"Scored interviews",c:"#0075C2"},{l:"Self-improving question",c:"#0075C2"},{l:"Screens applications",c:"#4BA8D9"}],
+        onboarding:[
+          {label:"Complete admissions training", note:"Required before any participation"},
+          {label:"Sign Code of Conduct / COI attestation", link:"https://docs.google.com/forms/d/e/1FAIpQLSdcpLaB6UlMFER5a2W3Klg2bBhGvaWaTmzP3OlASqQKTA0pWg/viewform"},
+          {label:"Submit training feedback", link:"https://docs.google.com/forms/d/e/1FAIpQLSf_sFttclJ0htN8HBgQTVBYPWj2gMAVNNDgJ4H_59ugso-clg/viewform"},
+        ],
+        platform:true, canScreen:true, type:"faculty_int",
+      },
+      student_adcom: {
+        desc:"You are a full voting member of the MD-PhD Admissions Committee. You screen applications, conduct interviews, and present summaries at AdCom meetings. Students in G3+ with one full year of service may apply for the Admissions Elective.",
+        badges:[{l:"Full voting member",c:"#00AFAA"},{l:"Screens applications",c:"#00AFAA"},{l:"Presents at AdCom",c:"#00AFAA"},{l:"Elective eligible (G3+)",c:"#00875A"}],
+        onboarding:[
+          {label:"Complete admissions training", note:"Required before any participation"},
+          {label:"Sign Code of Conduct / COI attestation", link:"https://docs.google.com/forms/d/e/1FAIpQLSdcpLaB6UlMFER5a2W3Klg2bBhGvaWaTmzP3OlASqQKTA0pWg/viewform"},
+          {label:"Submit training feedback", link:"https://docs.google.com/forms/d/e/1FAIpQLSf_sFttclJ0htN8HBgQTVBYPWj2gMAVNNDgJ4H_59ugso-clg/viewform"},
+        ],
+        platform:true, canScreen:true, canVote:true, elective:true, type:"student_adcom",
+      },
+      resident_fellow_adcom: {
+        desc:"As a recent trainee, you bring an essential clinical and developmental perspective. You are a full voting member and are expected to attend all four AdCom meetings.",
+        badges:[{l:"Full voting member",c:"#00AFAA"},{l:"Screens applications",c:"#00AFAA"},{l:"All 4 meetings required",c:"#E07B00"}],
+        onboarding:[
+          {label:"Complete admissions training", note:"Required before any participation"},
+          {label:"Sign Code of Conduct / COI attestation", link:"https://docs.google.com/forms/d/e/1FAIpQLSdcpLaB6UlMFER5a2W3Klg2bBhGvaWaTmzP3OlASqQKTA0pWg/viewform"},
+          {label:"Submit training feedback", link:"https://docs.google.com/forms/d/e/1FAIpQLSf_sFttclJ0htN8HBgQTVBYPWj2gMAVNNDgJ4H_59ugso-clg/viewform"},
+        ],
+        platform:true, canScreen:true, canVote:true, allMeetings:true, type:"res_fellow_adcom",
+      },
+      staff_adcom: {
+        desc:"Your institutional knowledge — spanning education, trainee affairs, student services, wellness, and research administration — brings a comprehensive human-centered perspective to every evaluation.",
+        badges:[{l:"Full voting member",c:"#00AFAA"},{l:"Screens applications",c:"#00AFAA"}],
+        onboarding:[
+          {label:"Complete admissions training", note:"Required before any participation"},
+          {label:"Sign Code of Conduct / COI attestation", link:"https://docs.google.com/forms/d/e/1FAIpQLSdcpLaB6UlMFER5a2W3Klg2bBhGvaWaTmzP3OlASqQKTA0pWg/viewform"},
+          {label:"Submit training feedback", link:"https://docs.google.com/forms/d/e/1FAIpQLSf_sFttclJ0htN8HBgQTVBYPWj2gMAVNNDgJ4H_59ugso-clg/viewform"},
+        ],
+        platform:true, canScreen:true, canVote:true, type:"staff_adcom",
+      },
+      faculty_adcom: {
+        desc:"You are a full voting member of the MD-PhD Admissions Committee. You screen approximately 20 applications, conduct 12 interviews, present applicants at four AdCom meetings, and vote on candidate acceptability.",
+        badges:[{l:"Full voting member",c:"#00AFAA"},{l:"Screens applications",c:"#00AFAA"},{l:"~20 screens · ~12 interviews",c:"#00D4CE"}],
+        onboarding:[
+          {label:"Complete admissions training", note:"Required before any participation"},
+          {label:"Sign Code of Conduct / COI attestation", link:"https://docs.google.com/forms/d/e/1FAIpQLSdcpLaB6UlMFER5a2W3Klg2bBhGvaWaTmzP3OlASqQKTA0pWg/viewform"},
+          {label:"Submit training feedback", link:"https://docs.google.com/forms/d/e/1FAIpQLSf_sFttclJ0htN8HBgQTVBYPWj2gMAVNNDgJ4H_59ugso-clg/viewform"},
+        ],
+        platform:true, canScreen:true, canVote:true, type:"faculty_adcom",
+      },
+      recruitment_chair: {
+        desc:"You shape the vision for recruitment events — coordinating outreach, social media, and events for applicants, admitted students, and waitlisted candidates.",
+        badges:[{l:"Leadership role",c:"#C5007C"},{l:"2-year term",c:"#C5007C"}],
+        onboarding:[
+          {label:"Complete admissions training", note:"Required"},
+          {label:"Sign Code of Conduct / COI attestation", link:"https://docs.google.com/forms/d/e/1FAIpQLSdcpLaB6UlMFER5a2W3Klg2bBhGvaWaTmzP3OlASqQKTA0pWg/viewform"},
+          {label:"Submit training feedback", link:"https://docs.google.com/forms/d/e/1FAIpQLSf_sFttclJ0htN8HBgQTVBYPWj2gMAVNNDgJ4H_59ugso-clg/viewform"},
+        ],
+        involvement:[
+          {icon:"👥", label:"Student–applicant buddy", desc:"Paired with an applicant to answer questions and share your experience."},
+          {icon:"🎤", label:"Student panels", desc:"General panels during interview season, post-admissions decision, and Explore Icahn."},
+          {icon:"📱", label:"Social media", desc:"Contribute content, photos, or videos to recruitment channels."},
+          {icon:"🍽️", label:"Virtual dinner", desc:"Host or join a virtual dinner with applicants the Sunday before each interview week — Oct 18, Nov 1, Nov 15, Dec 6."},
+          {icon:"🎬", label:"Video content", desc:"Short videos about program life, research, NYC, and more."},
+          {icon:"🗺️", label:"Recruitment fairs", desc:"SACNAS (Oct 29–31, Long Beach CA) · ABRCMS (Nov 18–21, Seattle WA)"},
+        ],
+        type:"recruit_chair",
+      },
+      recruitment_participant: {
+        desc:"Thank you for helping recruit the next class of MD-PhD students. Participate in as many or as few activities as you like — no training required.",
+        badges:[{l:"No training required",c:"#C5007C"},{l:"Flexible involvement",c:"#C5007C"}],
+        onboarding:[
+          {label:"Complete the recruitment interest form", link:"https://docs.google.com/forms/d/e/1FAIpQLSdsYo-EJlxGs0ByZPI1nedaWB8E6-z96bPUGZebRIgBQxv7Jw/viewform", note:"Let us know how you'd like to get involved"},
+        ],
+        involvement:[
+          {icon:"👥", label:"Student–applicant buddy", desc:"Paired with an applicant to answer questions and share your experience."},
+          {icon:"🎤", label:"Student panels", desc:"General panels during interview season, post-admissions decision, and Explore Icahn."},
+          {icon:"📱", label:"Social media", desc:"Contribute content, photos, or videos to recruitment channels."},
+          {icon:"🍽️", label:"Virtual dinner", desc:"Host or join a virtual dinner with applicants the Sunday before each interview week — Oct 18, Nov 1, Nov 15, Dec 6."},
+          {icon:"🎬", label:"Video content", desc:"Short videos about program life, research, NYC, and more."},
+          {icon:"🗺️", label:"Recruitment fairs", desc:"SACNAS (Oct 29–31, Long Beach CA) · ABRCMS (Nov 18–21, Seattle WA)"},
+        ],
+        type:"recruit_participant",
+      },
+    };
+
+    const PROGRAM_LINKS = [
+      {icon:"🌐", label:"MSTP Program website", desc:"Program overview, curriculum, faculty, and student profiles.", link:"https://icahn.mssm.edu/education/md-phd", linkLabel:"Visit website"},
+      {icon:"🎬", label:"Program video", desc:"A short film about life in the MSTP — research, clinical training, and community.", link:"https://youtu.be/jAmym4ujQdw?si=qPEtm09WE2zf7SXf", linkLabel:"Watch video"},
+      {icon:"📐", label:"Program infographic", desc:"A visual overview of the MD-PhD program structure, milestones, and outcomes.", link:"https://icahn.mssm.edu/files/ISMMS/Assets/Education/MD-PhD/MD-PhD-Infographic.pdf", linkLabel:"View infographic"},
+      {icon:"📊", label:"2026 MSTP Annual Report", desc:"Program overview, team, student outcomes, and admissions data."},
+    ];
+    const COMMITTEE_RESOURCES = [
+      {icon:"📋", label:"Training manual", desc:"Full committee reference — process, evaluation criteria, FAQ"},
+      {icon:"🎞️", label:"Training deck", desc:"2026–27 admissions training slides"},
+      {icon:"📜", label:"Admissions committee governance", desc:"Formal charter — composition, quorum, appointment procedures", link:"https://icahn.mssm.edu/about/faculty-resources/handbook/organization/dean-committees", linkLabel:"View faculty handbook"},
+    ];
+    const COMPLIANCE = [
+      {icon:"🛡️", label:"Code of Conduct / COI attestation", desc:"Required annually.", link:"https://docs.google.com/forms/d/e/1FAIpQLSdcpLaB6UlMFER5a2W3Klg2bBhGvaWaTmzP3OlASqQKTA0pWg/viewform", linkLabel:"Sign form"},
+      {icon:"💬", label:"Training feedback form", desc:"Anonymous post-training survey.", link:"https://docs.google.com/forms/d/e/1FAIpQLSf_sFttclJ0htN8HBgQTVBYPWj2gMAVNNDgJ4H_59ugso-clg/viewform", linkLabel:"Submit feedback"},
+    ];
+    const CONTACTS = [
+      {initials:"TS", name:"Talia H. Swartz, MD, PhD", role:"Director, MSTP", email:"talia.swartz@mssm.edu", color:"#00AFAA"},
+      {initials:"BT", name:"Bianca Taylor, MSEd", role:"Administrative Director", email:"bianca.taylor-starobin@mssm.edu", color:"#0075C2"},
+      {initials:"MH", name:"Matthew Hersey", role:"MSTP Coordinator", email:"matthew.hersey@mssm.edu", color:"#4A90D9"},
+    ];
+    const WEEKS = [
+      {n:1, sun:"Oct 18", mon:"Oct 19", tue:"Oct 20", adcom:"Oct 22", time:"2–6 pm"},
+      {n:2, sun:"Nov 1",  mon:"Nov 2",  tue:"Nov 3",  adcom:"Nov 5",  time:"2–6 pm"},
+      {n:3, sun:"Nov 15", mon:"Nov 16", tue:"Nov 17", adcom:"Nov 19", time:"2–6 pm"},
+      {n:4, sun:"Dec 6",  mon:"Dec 7",  tue:"Dec 8",  adcom:"Dec 10", time:"3–6 pm", flag:true},
+    ];
+    const MON_SCHED = [
+      {time:"10:00–11:00 am", event:"Welcome session",    note:"All applicants for the week", type:"info"},
+      {time:"11:00 am–noon",  event:"Student panel",      note:"All applicants for the week", type:"info"},
+      {time:"Noon–1:00 pm",   event:"Student connection", note:"Casual drop-in — students are welcome to stop by and meet applicants", type:"info"},
+      {time:"1:00 pm",  event:"Interview slot 1", type:"int"},
+      {time:"2:00 pm",  event:"Interview slot 2", type:"int"},
+      {time:"3:00 pm",  event:"Interview slot 3", type:"int"},
+      {time:"4:00 pm",  event:"Interview slot 4", type:"int"},
+      {time:"5:00 pm",  event:"Interview slot 5", type:"int"},
+      {time:"5:45–6 pm",event:"Leadership wrap-up", type:"wrap"},
+    ];
+    const TUE_SCHED = [
+      {time:"Noon–1:00 pm",   event:"Student connection", note:"Casual drop-in — students are welcome to stop by and meet applicants", type:"info"},
+      {time:"1:00 pm",  event:"Interview slot 1", type:"int"},
+      {time:"2:00 pm",  event:"Interview slot 2", type:"int"},
+      {time:"3:00 pm",  event:"Interview slot 3", type:"int"},
+      {time:"4:00 pm",  event:"Interview slot 4", type:"int"},
+      {time:"5:00 pm",  event:"Interview slot 5", type:"int"},
+      {time:"5:45–6 pm",event:"Leadership wrap-up", type:"wrap"},
+    ];
+
+    const SCREEN_APP = ["AMCAS primary application — academic background, research, extracurriculars, personal statement","Secondary application — research interests, institutional affiliations, essay responses","Experiences section — spend meaningful time here","Essays — Feedback, Justice, and Why Mount Sinai?","Letters of recommendation"];
+    const SCREEN_SUMMARY = [{label:"Background",desc:"Hometown, family, challenges, life experiences that led them toward science and medicine"},{label:"Research experience",desc:"Depth, independence, publications/presentations, intellectual engagement — most applicants have 2,000+ research hours"},{label:"Clinical experience",desc:"Hands-on patient exposure, duration, roles, insights into healthcare"},{label:"Academics",desc:"Undergraduate institution, major, GPA, MCAT, awards, coursework rigor"},{label:"Dual-degree motivation",desc:"Clarity of physician-scientist career vision — vague aspirations vs. genuine understanding"},{label:"Leadership & unique contributions",desc:"Initiative, advocacy, teamwork, impact — qualities that will enrich the program"}];
+    const SCREEN_ATTRS = [{l:"Self-improving",s:"Adaptable · Humble · Resourceful · Resilient · Self-aware",c:"#00AFAA"},{l:"Advocate",s:"Culturally humble · Empathetic · Socially-conscious · Systems aware",c:"#0075C2"},{l:"Life-long learner",s:"Committed · Curious · Disciplined · Passionate · Self-starter",c:"#C5007C"},{l:"Leader",s:"Change agent · Innovative · Practical · Visionary",c:"#00875A"},{l:"Team player",s:"Appreciative · Collaborative · Community builder · Dependable",c:"#E07B00"}];
+    const SCREEN_HES = ["Academic readiness concerns","Unexplained or prolonged gaps in training","Lack of research depth or independence","Research background not aligned with ISMMS faculty or research priorities","Limited clinical exposure or unclear commitment to medicine","Unclear commitment to dual-degree or lack of overarching narrative","Evidence of negative personal attributes or absence of positive ones","Institutional action or professionalism concern","Missing mentor letters or non-superlative letters of recommendation","Application disorganized, careless errors, or unexplained gaps","Application lacks authenticity — appears overly polished, generic, or potentially AI-generated","Application submitted late or with long lag between invitation and submission"];
+    const SCREEN_DISP = [{l:"Interview immediately",note:"Fewer than 1 in 10 applicants screened",c:"#00875A"},{l:"Interview 1 — high priority",c:"#00AFAA"},{l:"Interview 2 — low priority",c:"#94A3B8"},{l:"Do not interview / reject",c:"#EF4444"}];
+    const SCREEN_REM = ["Be detailed and objective — your narrative gives interviewers the context they need.","Write clear feed-forward notes: what should interviewers explore or follow up on?","Maintain strict confidentiality — applicant information must not be shared outside the process.","If rescreening, respond specifically to previously flagged concerns."];
+    const TP_QS = ["Describe a time when working on a team was challenging. What did you do?","Tell me about a time you had trouble building a trusting relationship — academic or professional. What did you do?","Describe a situation where you hoped to make a big contribution but had to take a smaller role. How did you channel your ideas?","Describe an instance where you didn't feel able to pull your weight. What new skills did you acquire?","If people on a team with you were to give you honest, direct feedback to improve, what might they say?"];
+    const SI_QS = ["Tell me about a time you disagreed with a policy or rule you had no control over. How did you adapt?","Tell me about a time it was necessary to admit to others that you had made a mistake. How did you handle it?","Tell me about a time you knew you were right but still had to follow directions that suggested otherwise.","Describe a time you felt confident you would perform well but ultimately fell short. How did you learn and grow?","Discuss a time you failed. What did you learn? Who did you go to for support?","Tell me about a time you made a tough decision you later regretted. What did you learn?","Describe a time you received constructive feedback and how you responded — different from your essay example.","Describe a significant change you experienced. What was your initial reaction, and your long-term response?","What personal characteristics might hinder your success in the MD-PhD program? How would you adapt?","Describe a time you felt in over your head. What resources did you seek out?","Describe a time you asked for help but felt it didn't resolve your problem. What did you do next?","Tell me about a time you felt emotionally overloaded. What coping strategies did you develop?","Tell me about a time you procrastinated. How did you eventually proceed?"];
+    const SIX_D = [{n:"1",label:"Commitment to research",desc:"Depth, independence, intellectual ownership, motivation to investigate"},{n:"2",label:"Commitment to clinical medicine",desc:"Authentic engagement with patient care, insight into why medicine matters"},{n:"3",label:"Academic excellence",desc:"If any challenges — what happened and what did they learn?"},{n:"4",label:"Physician-scientist career motivation",desc:"Is their vision of an integrated career clear and genuinely their own?"},{n:"5",label:"Leadership, engagement & unique contributions",desc:"What kind of teammate or advocate are they? Where do they lead?"},{n:"6",label:"Positive personal attributes",desc:"Self-improving, advocate, life-long learner, leader, team player — and absence of negative attributes"}];
+    const SC5 = [{n:"1",l:"Exceptional",c:"#00875A"},{n:"2",l:"High enthusiasm",c:"#00AFAA"},{n:"3",l:"Solid / average",c:"#94A3B8"},{n:"4",l:"Below average",c:"#F87171"},{n:"5",l:"Serious concerns / not recommended",c:"#EF4444"}];
+
+    function Sec({title,children}) {
+      return <div style={{marginBottom:20}}><div style={{fontSize:10,fontWeight:600,color:"#94A3B8",letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:12}}>{title}</div>{children}</div>;
+    }
+    function BList({items,dot,small}) {
+      return <div style={{borderRadius:10,overflow:"hidden",border:"1px solid #E2E8F0"}}>{items.map((item,i,arr)=><div key={i} style={{display:"flex",gap:10,padding:small?"9px 16px":"11px 16px",background:i%2===0?"#FFFFFF":"#F8FAFC",borderBottom:i<arr.length-1?"1px solid #F0F4F8":"none",alignItems:"flex-start"}}><div style={{width:6,height:6,borderRadius:"50%",background:dot||"#00AFAA",flexShrink:0,marginTop:5}}/><div style={{fontSize:small?12:13,color:"#64748B",lineHeight:1.5}}>{item}</div></div>)}</div>;
+    }
+    function Rems({items}) {
+      return <div style={{padding:"13px 15px",borderRadius:10,background:"rgba(251,191,36,0.06)",border:"1px solid rgba(251,191,36,0.18)"}}><div style={{fontSize:10,fontWeight:600,color:"#FBBF24",letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:8}}>Reminders</div>{items.map((r,i)=><div key={i} style={{display:"flex",gap:8,marginBottom:i<items.length-1?7:0,alignItems:"flex-start"}}><span style={{color:"#FBBF24",fontSize:11,marginTop:2,flexShrink:0}}>⚑</span><div style={{fontSize:12,color:"#7C2D12",lineHeight:1.6}}>{r}</div></div>)}</div>;
+    }
+    function ResCard({r,accent}) {
+      return <div style={{display:"flex",alignItems:"flex-start",gap:12,padding:"13px 15px",borderRadius:10,background:"#FFFFFF",border:"1px solid #E2E8F0"}}><div style={{width:36,height:36,borderRadius:8,background:"#F1F5F9",border:"1px solid #E2E8F0",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,fontSize:16}}>{r.icon}</div><div style={{flex:1}}><div style={{fontSize:13,fontWeight:600,color:"#1E293B",marginBottom:2}}>{r.label}</div><div style={{fontSize:11.5,color:"#64748B",marginBottom:r.link?6:0}}>{r.desc}</div>{r.link&&<a href={r.link} target="_blank" rel="noreferrer" style={{display:"inline-flex",alignItems:"center",gap:4,fontSize:11.5,color:accent,padding:"4px 10px",borderRadius:6,background:`${accent}12`,border:`1px solid ${accent}28`,fontWeight:500,textDecoration:"none"}}>{r.linkLabel} ↗</a>}</div></div>;
+    }
+
+    function ScreenerGuide({intro}) {
+      const scCols=["#00875A","#00AFAA","#94A3B8","#F87171"];
+      return <div>
+        {intro&&<p style={{fontSize:14,color:"#64748B",lineHeight:1.75,marginBottom:24,maxWidth:600}}>{intro}</p>}
+        <div style={{marginBottom:20,padding:"15px",borderRadius:10,background:"rgba(0,175,170,0.06)",border:"1px solid rgba(0,175,170,0.18)"}}><div style={{fontSize:10,fontWeight:600,color:"#00AFAA",letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:7}}>Purpose</div><div style={{fontSize:13,color:"#64748B",lineHeight:1.7}}>Conduct a comprehensive evaluation to identify promising physician-scientist applicants. Flag strengths, concerns, and attributes to support interviewers and committee members throughout the season.</div></div>
+        <Sec title="Review the full application"><BList items={SCREEN_APP} dot="#00AFAA"/></Sec>
+        <Sec title="Summarize in narrative format"><div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>{SCREEN_SUMMARY.map((item,i)=><div key={i} style={{padding:"11px 13px",borderRadius:9,background:"#FFFFFF",border:"1px solid #E2E8F0"}}><div style={{fontSize:12,fontWeight:600,color:"#1E293B",marginBottom:3}}>{item.label}</div><div style={{fontSize:11.5,color:"#64748B",lineHeight:1.5}}>{item.desc}</div></div>)}</div></Sec>
+        <Sec title="Attributes"><div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>{SCREEN_ATTRS.map((a,i)=><div key={i} style={{padding:"9px 11px",borderRadius:8,background:`${a.c}08`,border:`1px solid ${a.c}25`}}><div style={{fontSize:11.5,fontWeight:600,color:a.c,marginBottom:2}}>{a.l}</div><div style={{fontSize:10.5,color:"#64748B",fontStyle:"italic"}}>{a.s}</div></div>)}<div style={{padding:"9px 11px",borderRadius:8,background:"rgba(239,68,68,0.06)",border:"1px solid rgba(239,68,68,0.2)"}}><div style={{fontSize:11.5,fontWeight:600,color:"#F87171",marginBottom:2}}>Negative attributes</div><div style={{fontSize:10.5,color:"#64748B",fontStyle:"italic",lineHeight:1.4}}>Internal: Immature, inflexible, poor insight, externalizing<br/>Interpersonal: Avoidant, difficulty with authority or peers</div></div></div></Sec>
+        <Sec title="Hesitations to flag"><BList items={SCREEN_HES} dot="#F87171" small/></Sec>
+        <Sec title="Scoring"><div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:10}}>{["Outstanding","Very good","Good","Fair"].map((r,i)=><div key={i} style={{padding:"5px 12px",borderRadius:20,fontSize:12,fontWeight:500,background:`${scCols[i]}15`,border:`1px solid ${scCols[i]}35`,color:scCols[i]}}>{r}</div>)}</div><div style={{fontSize:11,color:"#94A3B8",marginBottom:14}}>Apply to: Research · Clinical · Academics · Leadership · Motivation</div><div style={{fontSize:10,fontWeight:600,color:"#94A3B8",letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:10}}>Final disposition</div><div style={{display:"flex",flexDirection:"column",gap:6}}>{SCREEN_DISP.map((s,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"9px 13px",borderRadius:8,background:"#FFFFFF",border:`1px solid ${s.c}25`}}><div style={{width:10,height:10,borderRadius:"50%",background:s.c,flexShrink:0}}/><div style={{fontSize:13,color:s.c,fontWeight:500,flex:1}}>{s.l}</div>{s.note&&<div style={{fontSize:10.5,color:"#94A3B8",fontStyle:"italic"}}>{s.note}</div>}</div>)}</div></Sec>
+        <Rems items={SCREEN_REM}/>
+      </div>;
+    }
+
+    function InterviewerGuide({teamPlayer,intro}) {
+      const qs=teamPlayer?TP_QS:SI_QS;
+      const qLabel=teamPlayer?"Standardized question — Team-player (choose one)":"Standardized question — Self-improving (choose one)";
+      const scoreLabel=teamPlayer?"1 Excellent · 2 Good · 3 Satisfactory · 4 Fair · 5 Poor":"Excellent · Good · Satisfactory · Fair · Poor";
+      return <div>
+        {intro&&<p style={{fontSize:14,color:"#64748B",lineHeight:1.75,marginBottom:24,maxWidth:600}}>{intro}</p>}
+        <div style={{marginBottom:20,padding:"15px",borderRadius:10,background:"rgba(0,117,194,0.06)",border:"1px solid rgba(0,117,194,0.18)"}}><div style={{fontSize:10,fontWeight:600,color:"#0075C2",letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:7}}>Purpose</div><div style={{fontSize:13,color:"#64748B",lineHeight:1.7}}>Help us get to know each applicant as a whole person — clarifying motivations, assessing potential, and uncovering their path to becoming a physician-scientist.</div></div>
+        <Sec title="Before the interview"><BList items={["Review the full application — screener notes, essays, and letters of recommendation","Pay attention to flags raised by screeners and prepare to explore them gently","Consider the six core domains and how the application speaks to each"]} dot="#0075C2"/></Sec>
+        <Sec title="The six core domains"><div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>{SIX_D.map((item,i)=><div key={i} style={{padding:"11px 13px",borderRadius:9,background:"#FFFFFF",border:"1px solid #E2E8F0"}}><div style={{display:"flex",alignItems:"center",gap:6,marginBottom:4}}><div style={{width:18,height:18,borderRadius:6,background:"rgba(0,117,194,0.15)",border:"1px solid rgba(0,117,194,0.3)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:700,color:"#0075C2",flexShrink:0}}>{item.n}</div><div style={{fontSize:12,fontWeight:600,color:"#1E293B"}}>{item.label}</div></div><div style={{fontSize:11.5,color:"#64748B",lineHeight:1.5}}>{item.desc}</div></div>)}</div></Sec>
+        <Sec title={qLabel}><div style={{borderRadius:10,overflow:"hidden",border:"1px solid #E2E8F0"}}>{qs.map((q,i,arr)=><div key={i} style={{display:"flex",gap:12,padding:"10px 16px",background:i%2===0?"#FFFFFF":"#F8FAFC",borderBottom:i<arr.length-1?"1px solid #F0F4F8":"none",alignItems:"flex-start"}}><div style={{fontSize:10,fontWeight:700,color:"#0075C2",minWidth:22,marginTop:2}}>Q{i+1}</div><div style={{fontSize:12.5,color:"#64748B",lineHeight:1.6,fontStyle:"italic"}}>{q}</div></div>)}</div><div style={{marginTop:8,padding:"9px 13px",borderRadius:8,background:"rgba(0,117,194,0.06)",border:"1px solid rgba(0,117,194,0.15)",fontSize:11.5,color:"#94A3B8"}}>Score: <span style={{color:"#00AFAA",fontWeight:500}}>{scoreLabel}</span></div></Sec>
+        <Sec title="Final scoring"><div style={{display:"flex",flexDirection:"column",gap:6}}>{SC5.map((s,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"9px 13px",borderRadius:8,background:"#FFFFFF",border:`1px solid ${s.c}25`}}><div style={{width:24,height:24,borderRadius:6,background:`${s.c}18`,border:`1px solid ${s.c}35`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:700,color:s.c,flexShrink:0}}>{s.n}</div><div style={{fontSize:13,color:s.c,fontWeight:500}}>{s.l}</div></div>)}</div></Sec>
+        <Rems items={["Be specific — avoid vague language like 'seemed fine.'","No one is perfect in every area. Score the full picture honestly.","Keep an open mind. Avoid letting unconscious bias color your judgment.","Respect confidentiality throughout and after the process."]}/>
+      </div>;
+    }
+
+    function ResearchGuide() {
+      return <div>
+        <div style={{marginBottom:20,padding:"15px",borderRadius:10,background:"rgba(0,117,194,0.06)",border:"1px solid rgba(0,117,194,0.18)"}}><div style={{fontSize:10,fontWeight:600,color:"#0075C2",letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:7}}>Purpose</div><div style={{fontSize:13,color:"#64748B",lineHeight:1.7}}>Assess the depth, independence, and authenticity of the applicant's research experience — and evaluate their motivation, intellectual curiosity, and alignment with Mount Sinai's research environment.</div></div>
+        <Sec title="Before the interview"><BList items={["Review the full application, paying close attention to research experiences and stated interests","Review the faculty mentor list and any cited publications","Note any flags or gaps raised by screeners related to research depth or independence"]} dot="#0075C2"/></Sec>
+        <Sec title="Focus areas"><div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>{[{label:"Research experience",desc:"Depth, independence, technical skills, duration, continuity of involvement"},{label:"Research motivation",desc:"Genuine curiosity, resilience, drive to discover — not just to complete a project"},{label:"Intellectual engagement",desc:"Does the applicant own the project intellectually, or just execute tasks?"},{label:"Mount Sinai alignment",desc:"Do their interests align with our research environment, programs, and strengths?"},{label:"Adaptability",desc:"Critical thinking, problem-solving, comfort with uncertainty and failure"},{label:"Potential",desc:"Could this person thrive in a rigorous PhD program? Is there a spark?"}].map((item,i)=><div key={i} style={{padding:"11px 13px",borderRadius:9,background:"#FFFFFF",border:"1px solid #E2E8F0"}}><div style={{fontSize:12,fontWeight:600,color:"#1E293B",marginBottom:3}}>{item.label}</div><div style={{fontSize:11.5,color:"#64748B",lineHeight:1.5}}>{item.desc}</div></div>)}</div></Sec>
+        <Sec title="Key questions to consider"><div style={{borderRadius:10,overflow:"hidden",border:"1px solid #E2E8F0"}}>{["Tell me about your research projects and your specific role in each.","What challenges did you face and how did you overcome them?","How do you see your research interests evolving during PhD training?","What excites you most about the research environment at Mount Sinai?","Tell me about a moment when an experiment failed. What did you do?","What question in your field do you most want to answer — and why?"].map((q,i,arr)=><div key={i} style={{display:"flex",gap:12,padding:"10px 16px",background:i%2===0?"#FFFFFF":"#F8FAFC",borderBottom:i<arr.length-1?"1px solid #F0F4F8":"none",alignItems:"flex-start"}}><div style={{fontSize:10,fontWeight:700,color:"#0075C2",minWidth:22,marginTop:2}}>Q{i+1}</div><div style={{fontSize:12.5,color:"#64748B",lineHeight:1.6,fontStyle:"italic"}}>{q}</div></div>)}</div></Sec>
+        <Sec title="Final rating — for each domain"><div style={{display:"flex",gap:6,flexWrap:"wrap"}}>{["Strongly agree","Agree","Neutral","Disagree","Strongly disagree"].map((r,i)=>{const cols=["#00AFAA","#00D4CE","#94A3B8","#F87171","#EF4444"];return <div key={i} style={{padding:"6px 13px",borderRadius:20,fontSize:12,fontWeight:500,background:`${cols[i]}15`,border:`1px solid ${cols[i]}35`,color:cols[i]}}>{r}</div>})}</div></Sec>
+        <Rems items={["Focus on depth of understanding and curiosity — not just technical skills or publications.","Maintain objectivity and confidentiality throughout and after the interview.","Provide specific, evidence-based comments on strengths and areas of concern.","Your interview is unscored — but your qualitative impressions are genuinely valued."]}/>
+      </div>;
+    }
+
+    function CommitteeGuide({allMeetings}) {
+      return <div>
+        <div style={{marginBottom:20,padding:"15px",borderRadius:10,background:"rgba(0,117,194,0.06)",border:"1px solid rgba(0,117,194,0.2)"}}><div style={{fontSize:10,fontWeight:600,color:"#0075C2",letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:8}}>AdCom meeting schedule</div><div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>{[{w:"Week 1",d:"Oct 22",t:"2–6 pm"},{w:"Week 2",d:"Nov 5",t:"2–6 pm"},{w:"Week 3",d:"Nov 19",t:"2–6 pm"},{w:"Week 4",d:"Dec 10",t:"3–6 pm",flag:true}].map((m,i)=><div key={i} style={{padding:"8px 12px",borderRadius:8,background:m.flag?"rgba(251,191,36,0.08)":"#F8FAFC",border:`1px solid ${m.flag?"rgba(251,191,36,0.3)":"#E2E8F0"}`}}><div style={{fontSize:11,fontWeight:600,color:m.flag?"#FBBF24":"#0075C2"}}>{m.w}</div><div style={{fontSize:12,color:"#64748B"}}>{m.d} · {m.t}{m.flag?" ⚑":""}</div></div>)}</div>{allMeetings&&<div style={{marginTop:10,fontSize:11.5,color:"#FBBF24",padding:"6px 10px",borderRadius:6,background:"rgba(251,191,36,0.08)",border:"1px solid rgba(251,191,36,0.2)"}}>⚑ All four meetings are required for resident and fellow committee members.</div>}</div>
+        <Sec title="Before the meeting"><BList items={["Review the list of applicants scheduled for discussion","For applicants you are presenting: read the full application, review all screener evaluations and interviewer comments, note any areas of concern and how they were addressed"]} dot="#C5007C"/></Sec>
+        <Sec title="Presenting — 3-minute overview covering"><div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:10}}>{["Research — depth, independence, motivation","Clinical exposure — hands-on roles, depth of engagement","Academics — readiness for rigorous dual-degree training","Dual-degree commitment — clarity and alignment of goals","Leadership, engagement & unique contributions","Attributes — positive and any negative"].map((item,i)=><div key={i} style={{display:"flex",gap:8,padding:"9px 11px",borderRadius:8,background:"#FFFFFF",border:"1px solid #E2E8F0",alignItems:"flex-start"}}><div style={{width:6,height:6,borderRadius:"50%",background:"#C5007C",flexShrink:0,marginTop:5}}/><div style={{fontSize:12.5,color:"#64748B",lineHeight:1.5}}>{item}</div></div>)}</div><div style={{padding:"9px 13px",borderRadius:8,background:"rgba(0,117,194,0.06)",border:"1px solid rgba(0,117,194,0.2)",fontSize:12,color:"#64748B"}}>Include comments from: <span style={{color:"#0075C2"}}>primary screener · secondary screener · AdCom interviewers · student interviewer · research interviewer</span></div></Sec>
+        <Sec title="During discussion"><BList items={["Have the application open and be ready to ask clarifying or follow-up questions","Address concerns from prior reviews — were they validated, mitigated, or clarified?","Use this prompt if needed: \"Anything we might have missed?\"","Listen as actively as you advocate — if others are raising concerns, ask yourself why"]} dot="#C5007C"/></Sec>
+        <Sec title="Voting"><div style={{display:"flex",flexDirection:"column",gap:6,marginBottom:10}}>{[{n:"1",l:"Exceptional",note:"Should be extremely rare",c:"#00875A"},{n:"2",l:"High enthusiasm",note:"We are seeking these applicants",c:"#00AFAA"},{n:"3",l:"Average",note:"Still acceptable, especially with others' higher enthusiasm",c:"#94A3B8"},{n:"4",l:"Below average",note:"Meaningful shortcomings — comments essential",c:"#F87171"},{n:"5",l:"Reject",note:"Serious concerns — comments must fully explain",c:"#EF4444"}].map((s,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"9px 13px",borderRadius:8,background:"#FFFFFF",border:`1px solid ${s.c}25`}}><div style={{width:24,height:24,borderRadius:6,background:`${s.c}18`,border:`1px solid ${s.c}35`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:700,color:s.c,flexShrink:0}}>{s.n}</div><div style={{flex:1,fontSize:13,color:s.c,fontWeight:500}}>{s.l}</div><div style={{fontSize:11,color:"#94A3B8",fontStyle:"italic"}}>{s.note}</div></div>)}</div></Sec>
+        <Rems items={["Use the full scoring range — scores of 1 should be extremely rare.","Strong views are welcome. Don't dig in so hard that you stop hearing others.","If colleagues are raising concerns, ask yourself why before pushing back.","Maintain professionalism and confidentiality at all times."]}/>
+      </div>;
+    }
+
+    function App() {
+      const [rid, setRid] = useState(null);
+      const [tab, setTab] = useState("overview");
+      const [chk, setChk] = useState({});
+      const [day, setDay] = useState("mon");
+
+      const role = rid ? CONTENT[rid] : null;
+      const roleObj = rid ? ROLES.find(r => r.id === rid) : null;
+      const gc = roleObj ? GC[roleObj.group] : GC["Interviewers"];
+      const t = role ? role.type : null;
+      const isRecP = t === "recruit_participant";
+      const isResI = t === "research_int";
+      const isAdCom = role && role.canVote;
+
+      function getTabs() {
+        if (!role) return [];
+        if (isRecP) return ["overview","timeline","contacts"];
+        if (isResI) return ["overview","timeline","resources","contacts"];
+        if (isAdCom) return ["overview","screening","interviewing","committee","timeline","platform","resources","contacts"];
+        if (t === "screener") return ["overview","timeline","platform","resources","contacts"];
+        if (role.canScreen) return ["overview","screener","timeline","platform","resources","contacts"];
+        return ["overview","timeline","platform","resources","contacts"];
+      }
+
+      const tabs = getTabs();
+      const toggleChk = k => setChk(p => ({...p,[k]:!p[k]}));
+      function selectRole(id) { setRid(id); setTab("overview"); setChk({}); }
+      const GROUPS = ["Screeners","Interviewers","Committee Members","Recruitment"];
+
+      return (
+        <div style={{display:"flex",height:"100vh",width:"100vw",overflow:"hidden",fontFamily:"'Inter',sans-serif"}}>
+
+          {/* SIDEBAR */}
+          <div style={{width:268,flexShrink:0,background:"#1B2D5B",borderRight:"1px solid rgba(255,255,255,0.1)",display:"flex",flexDirection:"column",overflow:"hidden"}}>
+            <div style={{padding:"18px 18px 16px",borderBottom:"1px solid rgba(255,255,255,0.1)"}}>
+              <div style={{display:"flex",alignItems:"stretch",gap:10,marginBottom:16}}>
+                <div style={{width:4,borderRadius:2,background:"linear-gradient(180deg,#0075C2,#00AFAA)",flexShrink:0}}></div>
+                <div>
+                  <div style={{fontFamily:"'Syne',Georgia,serif",fontSize:12,fontWeight:700,color:"#FFFFFF",letterSpacing:"0.02em",lineHeight:1.35}}>ICAHN SCHOOL OF MEDICINE<br/>AT MOUNT SINAI</div>
+                  <div style={{fontFamily:"'Inter',Arial,sans-serif",fontSize:9.5,color:"rgba(255,255,255,0.4)",marginTop:4,letterSpacing:"0.05em",textTransform:"uppercase"}}>MD-PhD Program</div>
+                </div>
+              </div>
+              <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4}}>
+                <div style={{width:5,height:18,borderRadius:3,background:"linear-gradient(180deg,#0075C2,#00AFAA)",flexShrink:0}}/>
+                <div style={{fontFamily:"'Syne',sans-serif",fontSize:12.5,fontWeight:700,color:"rgba(255,255,255,0.9)",letterSpacing:"-0.01em"}}>MSTP Admissions Portal</div>
+              </div>
+              <div style={{fontSize:10,color:"rgba(255,255,255,0.35)",paddingLeft:13}}>2026–27 admissions cycle</div>
+            </div>
+
+            <div style={{padding:"14px 10px",flex:1,overflowY:"auto"}}>
+              <div style={{fontSize:9.5,fontWeight:600,color:"rgba(255,255,255,0.35)",letterSpacing:"0.1em",textTransform:"uppercase",marginBottom:10,paddingLeft:8}}>Select your role</div>
+              {GROUPS.map(group => (
+                <div key={group} style={{marginBottom:18}}>
+                  <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:5,paddingLeft:8}}>
+                    <div style={{width:5,height:5,borderRadius:"50%",background:GC[group].accent}}/>
+                    <span style={{fontSize:9,fontWeight:600,color:"rgba(255,255,255,0.4)",letterSpacing:"0.08em",textTransform:"uppercase"}}>{group}</span>
+                  </div>
+                  {ROLES.filter(r => r.group===group).map(r => {
+                    const active = rid===r.id;
+                    return (
+                      <button key={r.id} className="rb" onClick={() => selectRole(r.id)}>
+                        <div className="ri" style={{padding:"8px 10px",borderRadius:7,marginBottom:2,background:active?GC[group].dim:"transparent",border:active?`1px solid ${GC[group].border}`:"1px solid transparent",position:"relative"}}>
+                          {active && <div style={{position:"absolute",left:0,top:0,bottom:0,width:3,borderRadius:"3px 0 0 3px",background:GC[group].accent}}/>}
+                          <div style={{fontSize:12.5,fontWeight:active?600:400,color:active?"#FFFFFF":"rgba(255,255,255,0.55)",paddingLeft:active?7:0,transition:"all 0.12s",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{r.label}</div>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+
+            <div style={{padding:"10px 14px",borderTop:"1px solid rgba(255,255,255,0.1)"}}>
+              <a href="https://applymd.mssm.edu" target="_blank" rel="noreferrer"
+                style={{display:"flex",alignItems:"center",gap:8,padding:"9px 12px",borderRadius:8,background:"rgba(0,175,170,0.12)",border:"1px solid rgba(0,175,170,0.25)",color:"#00D4CE",fontSize:12,fontWeight:500,textDecoration:"none"}}>
+                <span>⚡</span><span>Open ZAP Platform</span><span style={{marginLeft:"auto",fontSize:10,opacity:0.5}}>↗</span>
+              </a>
+            </div>
+          </div>
+
+          {/* MAIN */}
+          <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden",background:"#F5F7FA"}}>
+            {!rid ? (
+              <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:40,textAlign:"center"}}>
+                <div style={{width:60,height:60,borderRadius:18,background:"linear-gradient(135deg,rgba(0,175,170,0.15),rgba(0,117,194,0.15))",border:"1px solid rgba(0,175,170,0.3)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:26,marginBottom:22}}>🏥</div>
+                <div style={{fontFamily:"'Syne',sans-serif",fontSize:26,fontWeight:700,color:"#0F172A",letterSpacing:"-0.03em",marginBottom:10}}>Welcome to the<br/>MSTP Admissions Portal</div>
+                <div style={{fontSize:14,color:"#64748B",maxWidth:360,lineHeight:1.7}}>Select your role from the sidebar to access your personalized guide, resources, and calendar.</div>
+              </div>
+            ) : (
+              <>
+                {/* Header */}
+                <div style={{padding:"18px 26px 0",borderBottom:"1px solid #E2E8F0",flexShrink:0,background:"#FFFFFF"}}>
+                  <div style={{marginBottom:14}}>
+                    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:5}}>
+                      <div style={{width:8,height:8,borderRadius:"50%",background:gc.accent}}/>
+                      <span style={{fontSize:10,fontWeight:600,color:gc.accent,letterSpacing:"0.08em",textTransform:"uppercase"}}>{roleObj.group}</span>
+                    </div>
+                    <div style={{fontFamily:"'Syne',sans-serif",fontSize:21,fontWeight:700,color:"#0F172A",letterSpacing:"-0.02em",marginBottom:9}}>{roleObj.label}</div>
+                    <div style={{display:"flex",flexWrap:"wrap",gap:5}}>
+                      {role.badges.map((b,i) => <span key={i} style={{fontSize:11,fontWeight:500,padding:"3px 9px",borderRadius:20,background:`${b.c}15`,border:`1px solid ${b.c}35`,color:b.c}}>{b.l}</span>)}
+                    </div>
+                  </div>
+                  <div style={{display:"flex",gap:0,overflowX:"auto"}}>
+                    {tabs.map(tb => (
+                      <button key={tb} className="tb" onClick={() => setTab(tb)}
+                        style={{padding:"9px 14px 8px",fontSize:12.5,fontWeight:500,color:tab===tb?"#0F172A":"#64748B",borderBottom:tab===tb?`2px solid ${gc.accent}`:"2px solid transparent",whiteSpace:"nowrap",background:"none"}}>
+                        {tb.charAt(0).toUpperCase()+tb.slice(1)}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div style={{flex:1,overflowY:"auto",padding:"22px 26px"}}>
+                  <div key={tab}>
+
+                    {tab==="overview" && (
+                      <div>
+                        <p style={{fontSize:14,color:"#64748B",lineHeight:1.75,marginBottom:22,maxWidth:580}}>{role.desc}</p>
+                        {role.elective && <div style={{marginBottom:22,padding:"13px 15px",borderRadius:10,background:"rgba(0,135,90,0.08)",border:"1px solid rgba(0,135,90,0.25)"}}><div style={{fontSize:11,fontWeight:600,color:"#00875A",marginBottom:3}}>🎓 MD-PhD Admissions Elective</div><div style={{fontSize:12,color:"#00875A",lineHeight:1.6}}>Students in G3+ who have completed one full year of AdCom service may apply. Earn up to 2 weeks (80 hrs) of longitudinal elective credit. Requires MSTP leadership approval and scientific advisor sign-off (PhD phase).</div></div>}
+                        <div style={{marginBottom:24}}>
+                          <div style={{fontSize:10,fontWeight:600,color:"#64748B",letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:10}}>{isRecP?"Get started":"Onboarding checklist"}</div>
+                          <div style={{borderRadius:10,overflow:"hidden",border:"1px solid #E2E8F0"}}>
+                            {role.onboarding.map((item,i) => (
+                              <div key={i} style={{display:"flex",alignItems:"flex-start",gap:11,padding:"12px 15px",background:i%2===0?"#FFFFFF":"#F8FAFC",borderBottom:i<role.onboarding.length-1?"1px solid #F0F4F8":"none"}}>
+                                {!isRecP && <button className="ck" onClick={() => toggleChk("on"+i)} style={{width:19,height:19,borderRadius:6,flexShrink:0,marginTop:1,background:chk["on"+i]?gc.accent:"transparent",border:chk["on"+i]?"none":"1px solid #CBD5E1",display:"flex",alignItems:"center",justifyContent:"center"}}>{chk["on"+i]&&<span style={{fontSize:10,color:"#FFFFFF",fontWeight:700}}>✓</span>}</button>}
+                                <div style={{flex:1}}>
+                                  <div style={{fontSize:13,color:chk["on"+i]?"#94A3B8":"#1E293B",fontWeight:500,textDecoration:chk["on"+i]?"line-through":"none"}}>{item.label}</div>
+                                  {item.note&&<div style={{fontSize:11,color:"#64748B",marginTop:2}}>{item.note}</div>}
+                                </div>
+                                {item.link&&<a href={item.link} target="_blank" rel="noreferrer" style={{fontSize:11,color:gc.accent,padding:"3px 8px",borderRadius:5,background:`${gc.accent}12`,border:`1px solid ${gc.accent}28`,whiteSpace:"nowrap",textDecoration:"none"}}>Open ↗</a>}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        {(isRecP||role.type==="recruit_chair")&&role.involvement&&<div><div style={{fontSize:10,fontWeight:600,color:"#64748B",letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:10}}>Ways to get involved</div><div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>{role.involvement.map((item,i)=><div key={i} style={{padding:"13px",borderRadius:10,background:"#FFFFFF",border:"1px solid #E2E8F0"}}><div style={{fontSize:18,marginBottom:5}}>{item.icon}</div><div style={{fontSize:13,fontWeight:600,color:"#1E293B",marginBottom:3}}>{item.label}</div><div style={{fontSize:11.5,color:"#64748B",lineHeight:1.6}}>{item.desc}</div></div>)}</div></div>}
+                        {t==="screener"&&<div><div style={{marginBottom:18,height:1,background:"#E2E8F0"}}/><ScreenerGuide intro="Your role is to conduct comprehensive application reviews and provide the narrative that supports interviewers and committee members."/></div>}
+                        {t==="student_int"&&<div><div style={{marginBottom:18,height:1,background:"#E2E8F0"}}/><InterviewerGuide teamPlayer={true}/></div>}
+                        {t==="faculty_int"&&<div><div style={{marginBottom:18,height:1,background:"#E2E8F0"}}/><InterviewerGuide teamPlayer={false}/></div>}
+                        {t==="research_int"&&<div><div style={{marginBottom:18,height:1,background:"#E2E8F0"}}/><ResearchGuide/></div>}
+                      </div>
+                    )}
+
+                    {tab==="screener"&&<ScreenerGuide intro="Screeners provide the foundation for everything that follows. Your narrative summary, hesitation flags, and disposition recommendation shape how interviewers prepare and how the committee deliberates."/>}
+                    {tab==="screening"&&<ScreenerGuide intro="As a committee member, you screen approximately 10–20 applications per season. Your narrative summary and hesitation flags directly shape how interviewers prepare and how the committee deliberates."/>}
+                    {tab==="interviewing"&&<InterviewerGuide teamPlayer={t==="student_adcom"} intro={t==="student_adcom"?"As a student AdCom member, you conduct scored interviews using the team-player standardized question and the six core domains.":"As a committee member, you conduct scored interviews using the self-improving standardized question and the six core domains."}/>}
+                    {tab==="committee"&&<div><p style={{fontSize:14,color:"#64748B",lineHeight:1.75,marginBottom:22,maxWidth:580}}>As a committee member, your role is to synthesize insights from screeners, interviewers, and the full application — and to help the committee reach a collective, evidence-based decision.</p><CommitteeGuide allMeetings={role.allMeetings}/></div>}
+
+                    {tab==="timeline"&&(
+                      <div>
+                        <div style={{marginBottom:26}}>
+                          <div style={{fontSize:10,fontWeight:600,color:"#94A3B8",letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:14}}>Season overview</div>
+                          <div style={{position:"relative"}}>
+                            <div style={{position:"absolute",top:22,left:22,right:22,height:2,background:"linear-gradient(90deg,#00AFAA,#0075C2,#00875A,#C5007C)",borderRadius:2,opacity:0.2}}/>
+                            <div style={{display:"flex",alignItems:"flex-start",position:"relative",zIndex:1}}>
+                              {[{phase:"Screening",dates:"Jul – Oct",icon:"🔍",color:"#00AFAA",desc:"Applications reviewed throughout. Continues even after interviews begin."},{phase:"Interviews",dates:"Oct – Dec",icon:"🗣️",color:"#0075C2",desc:"Four interview weeks. Mon & Tue interviews, Thu AdCom meetings."},{phase:"Selection",dates:"Jan – Jun",icon:"✅",color:"#00875A",desc:"MSTP Subcommittee recommends. MD AdCom retains final authority."},{phase:"Quality improvement",dates:"Jan – Jun",icon:"📈",color:"#4A90D9",desc:"Process review and calibration across reviewers."}].map((p,i,arr)=>(
+                                <div key={i} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",textAlign:"center",position:"relative"}}>
+                                  <div style={{width:44,height:44,borderRadius:"50%",background:`${p.color}15`,border:`2px solid ${p.color}40`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,marginBottom:9,flexShrink:0}}>{p.icon}</div>
+                                  {i<arr.length-1&&<div style={{position:"absolute",top:14,right:-8,fontSize:14,color:"#CBD5E1"}}>›</div>}
+                                  <div style={{fontSize:11,fontWeight:700,color:p.color,marginBottom:2}}>{p.phase}</div>
+                                  <div style={{fontSize:10,color:"#94A3B8",marginBottom:5}}>{p.dates}</div>
+                                  <div style={{fontSize:10.5,color:"#64748B",lineHeight:1.5,maxWidth:120}}>{p.desc}</div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                        {!isRecP&&<>
+                          <div style={{marginBottom:24}}>
+                            <div style={{fontSize:10,fontWeight:600,color:"#94A3B8",letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:10}}>Interview weeks</div>
+                            <div style={{borderRadius:10,overflow:"hidden",border:"1px solid #E2E8F0"}}>
+                              <div style={{display:"grid",gridTemplateColumns:"44px 100px 1fr 1fr 1fr",background:"#F1F5F9",padding:"9px 15px",borderBottom:"1px solid #E2E8F0"}}>
+                                {["Wk","Sunday (dinner)","Monday","Tuesday","AdCom meeting"].map(h=><div key={h} style={{fontSize:9.5,fontWeight:600,color:"#94A3B8",letterSpacing:"0.06em",textTransform:"uppercase"}}>{h}</div>)}
+                              </div>
+                              {WEEKS.map((w,i)=>(
+                                <div key={i} style={{display:"grid",gridTemplateColumns:"44px 100px 1fr 1fr 1fr",padding:"11px 15px",borderBottom:i<3?"1px solid #F0F4F8":"none",background:i%2===0?"#FFFFFF":"#F8FAFC",alignItems:"center"}}>
+                                  <div style={{width:26,height:26,borderRadius:7,background:"rgba(0,175,170,0.12)",border:"1px solid rgba(0,175,170,0.25)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:700,color:"#00AFAA"}}>{w.n}</div>
+                                  <div style={{fontSize:12,color:"#64748B",display:"flex",alignItems:"center",gap:4}}><span>🍽️</span>{w.sun}</div>
+                                  <div style={{fontSize:12.5,color:"#475569"}}>{w.mon}</div>
+                                  <div style={{fontSize:12.5,color:"#475569"}}>{w.tue}</div>
+                                  <div style={{display:"flex",alignItems:"center",gap:5}}>
+                                    <span style={{fontSize:12.5,color:"#475569"}}>{w.adcom} · {w.flag?<><span style={{fontWeight:700,color:"#B45309"}}>3</span>{"–6 pm"}</>:w.time}</span>
+                                    {w.flag&&<span style={{fontSize:9.5,padding:"2px 6px",borderRadius:8,background:"rgba(251,191,36,0.15)",color:"#B45309",border:"1px solid rgba(251,191,36,0.3)",fontWeight:600}}>⚑ 1hr later</span>}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                            <div style={{marginTop:8,fontSize:11,color:"#94A3B8",padding:"9px 13px",borderRadius:8,background:"rgba(0,117,194,0.06)",border:"1px solid rgba(0,117,194,0.15)"}}>💡 All applicants attend Monday morning together — welcome session (10–11 am) and student panel (11 am–noon) — regardless of interview day.</div>
+                          </div>
+                          <div>
+                            <div style={{fontSize:10,fontWeight:600,color:"#94A3B8",letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:10}}>Daily schedule</div>
+                            <div style={{display:"flex",gap:6,marginBottom:10}}>
+                              {["mon","tue"].map(d=><button key={d} className="tb" onClick={()=>setDay(d)} style={{padding:"6px 14px",borderRadius:8,fontSize:12,fontWeight:500,background:day===d?"rgba(0,175,170,0.1)":"#FFFFFF",border:day===d?"1px solid rgba(0,175,170,0.3)":"1px solid #E2E8F0",color:day===d?"#00AFAA":"#64748B"}}>{d==="mon"?"Monday":"Tuesday"}</button>)}
+                            </div>
+                            <div style={{borderRadius:10,overflow:"hidden",border:"1px solid #E2E8F0"}}>
+                              {(day==="mon"?MON_SCHED:TUE_SCHED).map((s,i,arr)=>{
+                                const dc=s.type==="info"?"#0075C2":s.type==="int"?"#00AFAA":"#C5007C";
+                                return <div key={i} style={{display:"flex",alignItems:"flex-start",gap:11,padding:"10px 15px",background:i%2===0?"#FFFFFF":"#F8FAFC",borderBottom:i<arr.length-1?"1px solid #F0F4F8":"none"}}>
+                                  <div style={{minWidth:105,fontSize:11,color:"#94A3B8",paddingTop:1}}>{s.time}</div>
+                                  <div style={{display:"flex",alignItems:"center",gap:6,flex:1,paddingTop:1}}>
+                                    <div style={{width:5,height:5,borderRadius:"50%",background:dc,flexShrink:0}}/>
+                                    <div><div style={{fontSize:12.5,color:"#1E293B",fontWeight:500}}>{s.event}</div>{s.note&&<div style={{fontSize:10.5,color:"#94A3B8",marginTop:1}}>{s.note}</div>}</div>
+                                  </div>
+                                </div>;
+                              })}
+                            </div>
+                          </div>
+                        </>}
+                        {isRecP&&<div><div style={{fontSize:10,fontWeight:600,color:"#94A3B8",letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:10}}>Upcoming recruitment events</div>{[{name:"SACNAS",dates:"Oct 29–31",location:"Long Beach, CA",icon:"🌟"},{name:"ABRCMS",dates:"Nov 18–21",location:"Seattle, WA",icon:"🌟"},{name:"Virtual recruitment events",dates:"TBD",location:"Virtual",icon:"💻"},{name:"On-campus recruitment events",dates:"TBD",location:"Mount Sinai",icon:"🏥"}].map((ev,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:11,padding:"11px 15px",borderBottom:i<3?"1px solid #F0F4F8":"none",background:"#FFFFFF"}}><span style={{fontSize:18}}>{ev.icon}</span><div style={{flex:1}}><div style={{fontSize:13,fontWeight:600,color:"#1E293B"}}>{ev.name}</div><div style={{fontSize:11.5,color:"#64748B"}}>{ev.dates} · {ev.location}</div></div></div>)}</div>}
+                      </div>
+                    )}
+
+                    {tab==="platform"&&(
+                      <div>
+                        <div style={{marginBottom:18,padding:"15px",borderRadius:10,background:"rgba(0,175,170,0.06)",border:"1px solid rgba(0,175,170,0.2)"}}>
+                          <div style={{fontSize:13,fontWeight:600,color:"#00AFAA",marginBottom:4}}>ZAP — Admissions Platform</div>
+                          <div style={{fontSize:12.5,color:"#64748B",lineHeight:1.6,marginBottom:10}}>Log in at <span style={{color:"#00AFAA",fontWeight:500}}>applymd.mssm.edu</span> using your Sinai email and network password. Click "Faculty Login."</div>
+                          <a href="https://applymd.mssm.edu" target="_blank" rel="noreferrer" style={{display:"inline-flex",alignItems:"center",gap:6,padding:"7px 13px",borderRadius:8,background:"rgba(0,175,170,0.12)",border:"1px solid rgba(0,175,170,0.3)",color:"#00AFAA",fontSize:12,fontWeight:600,textDecoration:"none"}}>Open applymd.mssm.edu ↗</a>
+                        </div>
+                        {[role.canScreen&&{icon:"🔍",title:"Screening",color:"#00AFAA",steps:["Click 'Screen' in the left navigation","List defaults to All Applicants Not Screened","Click View to open the application and screening form","Complete the form and Submit at the bottom of the page"]},{icon:"🗣️",title:"Interviewing",color:"#0075C2",steps:["Click 'MD-PhD Interview' in the left navigation","List defaults to To Do","Click View to open the application and interview form","Submit button appears at both top and bottom of the page"]},role.canVote&&{icon:"🗳️",title:"Committee meeting",color:"#4A90D9",steps:["Click 'Committee List' in the left navigation","Navigate to the meeting date on the calendar","Click an applicant name to open the committee voting form","Select your vote and click Submit — do NOT check the Admissions Office Review box"]}].filter(Boolean).map((sec,i)=>(
+                          <div key={i} style={{marginBottom:10,padding:"15px",borderRadius:10,background:"#FFFFFF",border:"1px solid #E2E8F0"}}>
+                            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}><span style={{fontSize:15}}>{sec.icon}</span><div style={{fontSize:13,fontWeight:600,color:"#1E293B"}}>{sec.title}</div></div>
+                            <ol style={{paddingLeft:0,listStyle:"none",display:"flex",flexDirection:"column",gap:5}}>
+                              {sec.steps.map((step,j)=><li key={j} style={{display:"flex",gap:9,alignItems:"flex-start"}}><div style={{width:17,height:17,borderRadius:5,background:`${sec.color}15`,border:`1px solid ${sec.color}30`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,fontSize:9.5,fontWeight:700,color:sec.color,marginTop:1}}>{j+1}</div><span style={{fontSize:12,color:"#64748B",lineHeight:1.6}}>{step}</span></li>)}
+                            </ol>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {tab==="resources"&&(
+                      <div>
+                        <div style={{marginBottom:24}}><div style={{fontSize:10,fontWeight:600,color:"#94A3B8",letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:10}}>About the program</div><div style={{display:"flex",flexDirection:"column",gap:6}}>{PROGRAM_LINKS.map((r,i)=><ResCard key={i} r={r} accent={gc.accent}/>)}</div></div>
+                        {!isResI&&<div style={{marginBottom:24}}><div style={{fontSize:10,fontWeight:600,color:"#94A3B8",letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:10}}>Committee resources</div><div style={{display:"flex",flexDirection:"column",gap:6}}>{COMMITTEE_RESOURCES.map((r,i)=><ResCard key={i} r={r} accent={gc.accent}/>)}</div></div>}
+                        {!isResI&&<div><div style={{fontSize:10,fontWeight:600,color:"#94A3B8",letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:10}}>Compliance</div><div style={{display:"flex",flexDirection:"column",gap:6}}>{COMPLIANCE.map((r,i)=><ResCard key={i} r={r} accent={gc.accent}/>)}</div></div>}
+                      </div>
+                    )}
+
+                    {tab==="contacts"&&(
+                      <div>
+                        <div style={{fontSize:10,fontWeight:600,color:"#94A3B8",letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:10}}>MSTP leadership team</div>
+                        <div style={{display:"flex",flexDirection:"column",gap:6,marginBottom:18}}>
+                          {CONTACTS.map((person,i)=>(
+                            <div key={i} style={{display:"flex",alignItems:"center",gap:13,padding:"13px 15px",borderRadius:10,background:"#FFFFFF",border:"1px solid #E2E8F0"}}>
+                              <div style={{width:38,height:38,borderRadius:11,background:`${person.color}15`,border:`1px solid ${person.color}28`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,fontSize:12,fontWeight:700,color:person.color,fontFamily:"'Syne',sans-serif"}}>{person.initials}</div>
+                              <div style={{flex:1}}><div style={{fontSize:13,fontWeight:600,color:"#1E293B",marginBottom:1}}>{person.name}</div><div style={{fontSize:11.5,color:"#64748B"}}>{person.role}</div></div>
+                              <a href={"mailto:"+person.email} style={{fontSize:16,color:"#94A3B8",padding:"5px 9px",borderRadius:6,background:"#F8FAFC",border:"1px solid #E2E8F0",textDecoration:"none"}}>✉</a>
+                            </div>
+                          ))}
+                        </div>
+                        {!isRecP&&<div style={{padding:"13px 15px",borderRadius:10,background:"#FFFFFF",border:"1px solid #E2E8F0",fontSize:12,color:"#64748B",lineHeight:1.7}}>For COI disclosures, contact Bianca Taylor directly. For general process questions, reach out to MSTP leadership. All applicant information is strictly confidential — do not discuss outside the admissions process.</div>}
+                      </div>
+                    )}
+
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
